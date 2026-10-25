@@ -97,3 +97,20 @@ describe('createLogger', () => {
     })
   })
 })
+
+test('redacts sensitive values in log messages', () => {
+  const entries: LogEntry[] = []
+  const transport: Transport = {
+    log: (entry) => {
+      entries.push(entry)
+    },
+  }
+
+  const logger = createLogger({
+    transports: [transport],
+  })
+
+  logger.error('Request failed: token="abc123" password=hunter2')
+
+  expect(entries[0]?.message).toBe('Request failed: token=[REDACTED] password=[REDACTED]')
+})

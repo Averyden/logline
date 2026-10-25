@@ -23,7 +23,7 @@ const LEVEL_COLORS: Record<LogEntry['level'], number> = {
   warn: 0xf1c40f,
   error: 0xe74c3c,
   fatal: 0x992d22,
-}
+} satisfies Record<LogEntry['level'], number>
 
 function truncate(value: string, maxLength: number): string {
   if (value.length <= maxLength) {

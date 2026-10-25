@@ -1,5 +1,6 @@
 # Logline
 
+[![Version](https://img.shields.io/github/package-json/v/Averyden/logline?label=Version&color=blue)](https://github.com/Averyden/logline/blob/master/package.json)
 [![Built with Bun](https://img.shields.io/badge/built%20with-Bun-14151A?logo=bun&logoColor=white)](https://bun.com)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5%2B-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Build and publish](https://github.com/Averyden/logline/actions/workflows/publish.yml/badge.svg)](https://github.com/Averyden/logline/actions/workflows/publish.yml)

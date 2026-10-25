@@ -1,5 +1,6 @@
 import type { Transport } from '../transports/transport'
-import type { LogLevel } from './levels'
+import { LOG_LEVELS, type LogLevel } from './levels'
+import type { LogEntry, SerializedError } from './types'
 
 export interface LogContext {
   tags?: string[]
@@ -19,4 +20,76 @@ export interface Logger {
   warn(message: string, error?: unknown, context?: LogContext): void
   error(message: string, error?: unknown, context?: LogContext): void
   fatal(message: string, error?: unknown, context?: LogContext): void
+}
+
+function shouldLog(level: LogLevel, minLevel: LogLevel): boolean {
+  return LOG_LEVELS.indexOf(level) >= LOG_LEVELS.indexOf(minLevel)
+}
+
+function serializeError(error: unknown): SerializedError | undefined {
+  if (error instanceof Error) {
+    return {
+      name: error.name,
+      message: error.message,
+      stack: error.stack,
+    }
+  }
+
+  if (error === undefined) {
+    return undefined
+  }
+
+  return {
+    name: 'UnknownError',
+    message: String(error),
+  }
+}
+
+export function createLogger(options: LoggerOptions): Logger {
+  const minLevel = options.minLevel ?? 'info'
+
+  function write(level: LogLevel, message: string, error?: unknown, context?: LogContext): void {
+    if (!shouldLog(level, minLevel)) {
+      return
+    }
+
+    const entry: LogEntry = {
+      timestamp: new Date(),
+      level,
+      message,
+      service: options.service,
+      environment: options.environment,
+      tags: context?.tags,
+      metadata: context?.metadata,
+      error: serializeError(error),
+    }
+
+    for (const transport of options.transports) {
+      const transportMinLevel = transport.minLevel ?? minLevel
+
+      if (!shouldLog(level, transportMinLevel)) {
+        continue
+      }
+
+      try {
+        const result = transport.log(entry)
+
+        if (result instanceof Promise) {
+          void result.catch((transportError: unknown) => {
+            console.error('Logline transport failed:', transportError)
+          })
+        }
+      } catch (transportError: unknown) {
+        console.error('Logline transport failed:', transportError)
+      }
+    }
+  }
+
+  return {
+    debug: (message, context) => write('debug', message, undefined, context),
+    info: (message, context) => write('info', message, undefined, context),
+    warn: (message, error, context) => write('warn', message, error, context),
+    error: (message, error, context) => write('error', message, error, context),
+    fatal: (message, error, context) => write('fatal', message, error, context),
+  }
 }

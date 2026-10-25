@@ -21,7 +21,7 @@ jobs:
         uses: oven-sh/setup-bun@v2
 
       - name: Run tests
-        run: bun tests
+        run: bun test
 
       - name: Build package
         run: bun run build

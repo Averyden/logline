@@ -1,7 +1,7 @@
 import type { Transport } from '../transports/transport'
 import { LOG_LEVELS, type LogLevel } from './levels'
 import type { LogEntry, SerializedError } from './types'
-import { sanitizeMetadata } from '../utils/sanitize'
+import { sanitizeMetadata, sanitizeString } from '../utils/sanitize'
 
 export interface LogContext {
   tags?: string[]
@@ -30,9 +30,9 @@ function shouldLog(level: LogLevel, minLevel: LogLevel): boolean {
 function serializeError(error: unknown): SerializedError | undefined {
   if (error instanceof Error) {
     return {
-      name: error.name,
-      message: error.message,
-      stack: error.stack,
+      name: sanitizeString(error.name),
+      message: sanitizeString(error.message),
+      stack: error.stack ? sanitizeString(error.stack) : undefined,
     }
   }
 
@@ -42,7 +42,7 @@ function serializeError(error: unknown): SerializedError | undefined {
 
   return {
     name: 'UnknownError',
-    message: String(error),
+    message: sanitizeString(String(error)),
   }
 }
 

@@ -1,9 +1,26 @@
+
 {
-  "name": "logline",
-  "module": "index.ts",
+  "name": "@averyden/logline",
+  "version": "0.1.0",
+  "description": "A lightweight TypeScript logging library",
   "type": "module",
-  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Averyden/logline.git"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "typescript": "^5.0.0"
   }
 }

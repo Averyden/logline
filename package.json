@@ -17,7 +17,7 @@
     "url": "https://github.com/Averyden/logline.git"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "bun build ./src/index.ts --outdir ./dist --target node && tsc -p tsconfig.types.json"
   },
   "devDependencies": {
     "@types/bun": "latest",

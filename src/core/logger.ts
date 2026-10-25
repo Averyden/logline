@@ -1,6 +1,7 @@
 import type { Transport } from '../transports/transport'
 import { LOG_LEVELS, type LogLevel } from './levels'
 import type { LogEntry, SerializedError } from './types'
+import { sanitizeMetadata } from '../utils/sanitize'
 
 export interface LogContext {
   tags?: string[]
@@ -60,7 +61,7 @@ export function createLogger(options: LoggerOptions): Logger {
       service: options.service,
       environment: options.environment,
       tags: context?.tags,
-      metadata: context?.metadata,
+      metadata: context?.metadata ? sanitizeMetadata(context.metadata) : undefined,
       error: serializeError(error),
     }
 

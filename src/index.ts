@@ -1,1 +1,3 @@
-console.log("Hello via Bun!");
+export { LOG_LEVELS } from './core/levels'
+export type { LogLevel } from './core/levels'
+export type { LogEntry, SerializedError } from './core/types'

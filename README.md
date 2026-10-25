@@ -75,11 +75,13 @@ logger.warn('Payment provider response was slow', undefined, {
 })
 ```
 
-Keep the webhook URL in a local `.env` file and do not commit it:
+Create the environment file:
 
-```env
-DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
+```bash
+cp .env.example .env
 ```
+
+Fill in `DISCORD_WEBHOOK_URL` in `.env`. On PowerShell, use `Copy-Item .env.example .env` instead.
 
 The repository includes a real webhook smoke test in `sandbox/discord-webhook.ts`. Run it only when `DISCORD_WEBHOOK_URL` is configured:
 

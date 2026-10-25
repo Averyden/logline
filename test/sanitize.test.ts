@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test'
-import { sanitizeMetadata } from '../src/utils/sanitize'
+import { sanitizeMetadata, sanitizeString } from '../src/utils/sanitize'
 
 test('redacts sensitive keys', () => {
   const result = sanitizeMetadata({
@@ -56,4 +56,20 @@ test('handles circular references', () => {
     name: 'test',
     self: '[Circular]',
   })
+})
+
+test('redacts bearer credentials', () => {
+  expect(sanitizeString('Authorization: Bearer abc123')).toBe('Authorization: [REDACTED]')
+})
+
+test('redacts database URL passwords', () => {
+  expect(sanitizeString('Connection failed: postgres://admin:secret123@db.example.com/app')).toBe(
+    'Connection failed: postgres://admin:[REDACTED]@db.example.com/app',
+  )
+})
+
+test('preserves ordinary text', () => {
+  expect(sanitizeString('Failed to load tasks from the database')).toBe(
+    'Failed to load tasks from the database',
+  )
 })

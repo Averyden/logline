@@ -57,7 +57,7 @@ export function createLogger(options: LoggerOptions): Logger {
     const entry: LogEntry = {
       timestamp: new Date(),
       level,
-      message,
+      message: sanitizeString(message),
       service: options.service,
       environment: options.environment,
       tags: context?.tags,

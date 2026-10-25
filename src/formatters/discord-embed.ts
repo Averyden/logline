@@ -86,7 +86,7 @@ export function formatDiscordEmbed(entry: LogEntry): DiscordEmbed {
   }
 
   return {
-    title: `Logline  · ${entry.level.toUpperCase()}`,
+    title: `Logline · ${entry.level.toUpperCase()}`,
     description: truncate(entry.message, 4096),
     color: LEVEL_COLORS[entry.level],
     timestamp: entry.timestamp.toISOString(),

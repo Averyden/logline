@@ -65,12 +65,6 @@ export function createLogger(options: LoggerOptions): Logger {
     }
 
     for (const transport of options.transports) {
-      const transportMinLevel = transport.minLevel ?? minLevel
-
-      if (!shouldLog(level, transportMinLevel)) {
-        continue
-      }
-
       try {
         const result = transport.log(entry)
 

@@ -4,6 +4,7 @@
 [![Built with Bun](https://img.shields.io/badge/built%20with-Bun-14151A?logo=bun&logoColor=white)](https://bun.com)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5%2B-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Build and publish](https://github.com/Averyden/logline/actions/workflows/publish.yml/badge.svg)](https://github.com/Averyden/logline/actions/workflows/publish.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Logline is a small, typed logging library for Bun and TypeScript. It supports log levels, structured metadata, error serialization, console output, and Discord webhook delivery.
 

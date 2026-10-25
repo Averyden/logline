@@ -1,7 +1,18 @@
 const SENSITIVE_KEY_PATTERN =
-  /password|passwd|secret|token|authorization|api[-_]?key|private[-_]?key|cookie|webhook|credential/i
+  /password|passwd|secret|token|authorization|api[-_]?key|access[-_]?key|private[-_]?key|cookie|webhook|credential/i
+
+const SENSITIVE_ASSIGNMENT_PATTERN =
+  /\b(password|passwd|secret|token|authorization|api[-_]?key|access[-_]?key|private[-_]?key|cookie|webhook(?:url)?)\b(\s*[:=]\s*)(?:Bearer\s+\S+|Basic\s+\S+|"[^"]*"|'[^']*'|[^\s,;]+)/gi
+
+const DATABASE_CREDENTIAL_PATTERN = /\b([a-z][a-z0-9+.-]*:\/\/[^:\s/@]+:)[^@\s/]+@/gi
 
 const REDACTED = '[REDACTED]'
+
+export function sanitizeString(value: string): string {
+  return value
+    .replace(SENSITIVE_ASSIGNMENT_PATTERN, '$1$2[REDACTED]')
+    .replace(DATABASE_CREDENTIAL_PATTERN, '$1[REDACTED]@')
+}
 
 function sanitizeValue(value: unknown, seen: WeakSet<object>): unknown {
   if (value === null || typeof value !== 'object') {

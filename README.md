@@ -86,12 +86,6 @@ cp .env.example .env
 
 Fill in `DISCORD_WEBHOOK_URL` in `.env`. On PowerShell, use `Copy-Item .env.example .env` instead.
 
-The repository includes a real webhook smoke test in `sandbox/discord-webhook.ts`. Run it only when `DISCORD_WEBHOOK_URL` is configured:
-
-```bash
-bun run sandbox/discord-webhook.ts
-```
-
 ## Development
 
 Run the test suite with:

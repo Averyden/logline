@@ -25,6 +25,13 @@ const LEVEL_COLORS: Record<LogEntry['level'], number> = {
   fatal: 0x992d22,
 } satisfies Record<LogEntry['level'], number>
 
+/**
+ * Truncate a string to fit a Discord embed field size limit.
+ *
+ * @param value - The string to shorten.
+ * @param maxLength - The maximum allowed length for the result.
+ * @returns A truncated string, or the original value if it already fits.
+ */
 function truncate(value: string, maxLength: number): string {
   if (value.length <= maxLength) {
     return value
@@ -33,6 +40,12 @@ function truncate(value: string, maxLength: number): string {
   return `${value.slice(0, maxLength - 3)}...`
 }
 
+/**
+ * Format a log entry as a Discord embed payload.
+ *
+ * @param entry - The log entry to convert into a Discord embed.
+ * @returns An embed representation suitable for Discord webhook delivery.
+ */
 export function formatDiscordEmbed(entry: LogEntry): DiscordEmbed {
   const fields: DiscordEmbedField[] = []
 

@@ -23,10 +23,23 @@ export interface Logger {
   fatal(message: string, error?: unknown, context?: LogContext): void
 }
 
+/**
+ * Determine whether a log level meets the configured minimum severity.
+ *
+ * @param level - The log level to evaluate.
+ * @param minLevel - The minimum allowed log level.
+ * @returns True when the level is at or above the minimum threshold.
+ */
 function shouldLog(level: LogLevel, minLevel: LogLevel): boolean {
   return LOG_LEVELS.indexOf(level) >= LOG_LEVELS.indexOf(minLevel)
 }
 
+/**
+ * Convert an unknown error value into a sanitized serialized error payload.
+ *
+ * @param error - The original error or non-error value to serialize.
+ * @returns A sanitized error representation, or undefined when no error was provided.
+ */
 function serializeError(error: unknown): SerializedError | undefined {
   if (error instanceof Error) {
     return {
@@ -46,9 +59,23 @@ function serializeError(error: unknown): SerializedError | undefined {
   }
 }
 
+/**
+ * Create a logger instance bound to the given service metadata and transports.
+ *
+ * @param options - Configuration for the logger, including service metadata and transports.
+ * @returns A logger API for writing debug, info, warn, error, and fatal entries.
+ */
 export function createLogger(options: LoggerOptions): Logger {
   const minLevel = options.minLevel ?? 'info'
 
+  /**
+   * Write a sanitized log entry to each configured transport.
+   *
+   * @param level - The severity associated with the log entry.
+   * @param message - The human-readable message body.
+   * @param error - Optional error metadata to include with the entry.
+   * @param context - Optional tags and metadata to attach to the entry.
+   */
   function write(level: LogLevel, message: string, error?: unknown, context?: LogContext): void {
     if (!shouldLog(level, minLevel)) {
       return
@@ -81,10 +108,43 @@ export function createLogger(options: LoggerOptions): Logger {
   }
 
   return {
+    /**
+     * Log a debug message.
+     *
+     * @param message - The message to log.
+     * @param context - Optional metadata to include.
+     */
     debug: (message, context) => write('debug', message, undefined, context),
+    /**
+     * Log an informational message.
+     *
+     * @param message - The message to log.
+     * @param context - Optional metadata to include.
+     */
     info: (message, context) => write('info', message, undefined, context),
+    /**
+     * Log a warning message.
+     *
+     * @param message - The message to log.
+     * @param error - Optional error details associated with the warning.
+     * @param context - Optional metadata to include.
+     */
     warn: (message, error, context) => write('warn', message, error, context),
+    /**
+     * Log an error message.
+     *
+     * @param message - The message to log.
+     * @param error - Optional error details associated with the error.
+     * @param context - Optional metadata to include.
+     */
     error: (message, error, context) => write('error', message, error, context),
+    /**
+     * Log a fatal message.
+     *
+     * @param message - The message to log.
+     * @param error - Optional error details associated with the fatal error.
+     * @param context - Optional metadata to include.
+     */
     fatal: (message, error, context) => write('fatal', message, error, context),
   }
 }

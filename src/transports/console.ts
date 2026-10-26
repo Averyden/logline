@@ -1,5 +1,5 @@
 import type { LogEntry } from '../core/types'
-import type { LogLevel } from '../core/levels'
+import { LOG_LEVELS, type LogLevel } from '../core/levels'
 import type { Transport } from './transport'
 
 export interface ConsoleTransportOptions {
@@ -14,6 +14,10 @@ export class ConsoleTransport implements Transport {
   }
 
   log(entry: LogEntry): void {
+    if (LOG_LEVELS.indexOf(entry.level) < LOG_LEVELS.indexOf(this.minLevel)) {
+      return
+    }
+
     const timestamp = entry.timestamp.toISOString()
     const prefix = `[${timestamp}] [${entry.level.toUpperCase()}]`
     const service = entry.service ? ` [${entry.service}]` : ''

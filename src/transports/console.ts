@@ -9,10 +9,20 @@ export interface ConsoleTransportOptions {
 export class ConsoleTransport implements Transport {
   readonly minLevel: LogLevel
 
+  /**
+   * Create a console transport that only emits entries at or above a minimum level.
+   *
+   * @param options - The transport configuration.
+   */
   constructor(options: ConsoleTransportOptions = {}) {
     this.minLevel = options.minLevel ?? 'debug'
   }
 
+  /**
+   * Write a log entry to the console using the configured minimum severity threshold.
+   *
+   * @param entry - The formatted log entry to emit.
+   */
   log(entry: LogEntry): void {
     if (LOG_LEVELS.indexOf(entry.level) < LOG_LEVELS.indexOf(this.minLevel)) {
       return

@@ -1,30 +1,37 @@
 # Logline
 
-[![Version](https://img.shields.io/github/package-json/v/Averyden/logline?label=Version&color=blue)](https://github.com/Averyden/logline/blob/master/package.json)
-[![Built with Bun](https://img.shields.io/badge/built%20with-Bun-14151A?logo=bun&logoColor=white)](https://bun.com)
+[![npm version](https://img.shields.io/npm/v/@averyden/logline)](https://www.npmjs.com/package/@averyden/logline)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5%2B-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Build and publish](https://github.com/Averyden/logline/actions/workflows/publish.yml/badge.svg)](https://github.com/Averyden/logline/actions/workflows/publish.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Logline is a small, typed logging library for Bun and TypeScript. It supports log levels, structured metadata, error serialization, console output, and Discord webhook delivery.
+Lightweight structured logging for TypeScript apps. Logline gives you a small, typed logger with log levels, metadata support, sanitized error output, console transport, and optional Discord webhook delivery.
 
-## Requirements
+## Features
 
-- [Bun](https://bun.com) 1.4 or newer
-- TypeScript support through Bun
+- Typed `debug`, `info`, `warn`, `error`, and `fatal` logging
+- Structured `tags` and `metadata` payloads
+- Error serialization with stack traces for `Error` values
+- Configurable minimum log level filtering
+- Built-in `ConsoleTransport`
+- Optional `DiscordTransport` for webhook notifications
 
-## Install
+## Installation
 
 ```bash
-bun install
+npm install @averyden/logline
 ```
 
-## Usage
+Or with Bun or pnpm:
 
-Create a logger with one or more transports. The default minimum level is `info`.
+```bash
+bun add @averyden/logline
+pnpm add @averyden/logline
+```
+
+## Quick start
 
 ```ts
-import { ConsoleTransport, createLogger } from './src'
+import { ConsoleTransport, createLogger } from '@averyden/logline'
 
 const logger = createLogger({
   service: 'checkout-api',
@@ -46,7 +53,48 @@ try {
 }
 ```
 
-Supported levels, from least to most severe, are `debug`, `info`, `warn`, `error`, and `fatal`. Set `minLevel` to filter entries before they reach transports:
+## API
+
+```ts
+import {
+  createLogger,
+  ConsoleTransport,
+  DiscordTransport,
+  type LogLevel,
+  type Logger,
+} from '@averyden/logline'
+```
+
+### createLogger
+
+```ts
+const logger = createLogger({
+  service?: string
+  environment?: string
+  minLevel?: 'debug' | 'info' | 'warn' | 'error' | 'fatal'
+  transports: Array<ConsoleTransport | DiscordTransport>
+})
+```
+
+### Logger methods
+
+```ts
+logger.debug(message: string, context?: { tags?: string[]; metadata?: Record<string, unknown> }): void
+logger.info(message: string, context?: { tags?: string[]; metadata?: Record<string, unknown> }): void
+logger.warn(message: string, error?: unknown, context?: { tags?: string[]; metadata?: Record<string, unknown> }): void
+logger.error(message: string, error?: unknown, context?: { tags?: string[]; metadata?: Record<string, unknown> }): void
+logger.fatal(message: string, error?: unknown, context?: { tags?: string[]; metadata?: Record<string, unknown> }): void
+```
+
+## Log levels
+
+Supported levels, from least to most severe, are:
+
+```ts
+'debug' | 'info' | 'warn' | 'error' | 'fatal'
+```
+
+Use `minLevel` to filter log entries before they reach any transport:
 
 ```ts
 const logger = createLogger({
@@ -55,20 +103,38 @@ const logger = createLogger({
 })
 ```
 
-## Discord webhooks
+## Transports
 
-Add a Discord transport alongside the console transport. Webhook URLs must use HTTPS and the `discord.com/api/webhooks/` endpoint.
+### ConsoleTransport
+
+The default console transport writes structured logs to stdout/stderr-like console output.
 
 ```ts
-import { ConsoleTransport, createLogger } from './src'
-import { DiscordTransport } from './src/transports/discord'
+import { ConsoleTransport, createLogger } from '@averyden/logline'
+
+const logger = createLogger({
+  service: 'orders',
+  transports: [new ConsoleTransport()],
+})
+```
+
+### DiscordTransport
+
+Send log entries to a Discord webhook.
+
+```ts
+import {
+  ConsoleTransport,
+  createLogger,
+  DiscordTransport,
+} from '@averyden/logline'
 
 const logger = createLogger({
   service: 'checkout-api',
   transports: [
     new ConsoleTransport(),
     new DiscordTransport({
-      webhookUrl: Bun.env.DISCORD_WEBHOOK_URL!,
+      webhookUrl: process.env.DISCORD_WEBHOOK_URL!,
     }),
   ],
 })
@@ -78,20 +144,8 @@ logger.warn('Payment provider response was slow', undefined, {
 })
 ```
 
-Create the environment file:
+The webhook URL must use HTTPS and point to a valid `discord.com/api/webhooks/...` endpoint. Store it in a `.env` file as `DISCORD_WEBHOOK_URL` and read it from `process.env.DISCORD_WEBHOOK_URL`.
 
-```bash
-cp .env.example .env
-```
+## License
 
-Fill in `DISCORD_WEBHOOK_URL` in `.env`. On PowerShell, use `Copy-Item .env.example .env` instead.
-
-## Development
-
-Run the test suite with:
-
-```bash
-bun test
-```
-
-The public entry point is `src/index.ts`. It exports the logger factory, log levels and types, and `ConsoleTransport`; import `DiscordTransport` directly from `src/transports/discord` when it is needed.
+MIT

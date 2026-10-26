@@ -1,7 +1,7 @@
 
 {
   "name": "@averyden/logline",
-  "version": "0.1.31",
+  "version": "0.1.4",
   "description": "A lightweight TypeScript logging library",
   "type": "module",
   "main": "./dist/index.js",

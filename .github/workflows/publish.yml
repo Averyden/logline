@@ -3,11 +3,11 @@ name: Build and publish
 on:
   push:
     tags:
-      - 'v*'
+      - '*.*.*'
 
 permissions:
   contents: read
-  packages: write
+  id-token: write
 
 jobs:
   publish:
@@ -26,14 +26,15 @@ jobs:
       - name: Build package
         run: bun run build
 
-      - name: Configure GitHub Packages
+      - name: Configure npmjs
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          registry-url: 'https://npm.pkg.github.com'
+          registry-url: 'https://registry.npmjs.org/'
           scope: '@averyden'
+
+      - name: Update npm for trusted publishing
+        run: npm install --global npm@^11.5.1
 
       - name: Publish package
         run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -59,7 +59,7 @@ export function formatDiscordEmbed(entry: LogEntry): DiscordEmbed {
     })
   }
 
-  if (entry.metadata && Object.keys(entry.message).length > 0) {
+  if (entry.metadata && Object.keys(entry.metadata).length > 0) {
     let metadata: string
 
     try {

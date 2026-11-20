@@ -7,6 +7,7 @@ export type { LogEntry, SerializedError } from './core/types'
 
 export { ConsoleTransport } from './transports/console'
 export type { ConsoleTransportOptions } from './transports/console'
+export type { Transport } from './transports/transport'
 
 export { DiscordTransport } from './transports/discord'
 export type { DiscordTransportOptions } from './transports/discord'

@@ -62,6 +62,7 @@ import {
   DiscordTransport,
   type LogLevel,
   type Logger,
+  type Transport,
 } from '@averyden/logline'
 ```
 
@@ -145,6 +146,29 @@ logger.warn('Payment provider response was slow', undefined, {
 ```
 
 The webhook URL must use HTTPS and point to a valid `discord.com/api/webhooks/...` endpoint. Store it in a `.env` file as `DISCORD_WEBHOOK_URL` and read it from `process.env.DISCORD_WEBHOOK_URL`.
+
+### Custom transports
+
+Any object with a `log` method satisfying the `Transport` interface works as a transport. Return a promise for asynchronous delivery — Logline catches rejections so a failing transport never crashes your app.
+
+```ts
+import { createLogger, type LogEntry, type Transport } from '@averyden/logline'
+
+class WebhookTransport implements Transport {
+  log(entry: LogEntry): Promise<void> {
+    return fetch('https://example.com/logs', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(entry),
+    }).then(() => undefined)
+  }
+}
+
+const logger = createLogger({
+  service: 'checkout-api',
+  transports: [new WebhookTransport()],
+})
+```
 
 ## License
 

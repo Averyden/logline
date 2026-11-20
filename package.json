@@ -1,13 +1,33 @@
-
 {
   "name": "@averyden/logline",
   "version": "0.1.7",
   "description": "A lightweight TypeScript logging library",
   "type": "module",
+  "license": "MIT",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
   "files": [
     "dist"
+  ],
+  "keywords": [
+    "log",
+    "logger",
+    "logging",
+    "typescript",
+    "structured-logging",
+    "console",
+    "discord",
+    "webhook"
   ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
@@ -17,10 +37,12 @@
     "url": "https://github.com/Averyden/logline.git"
   },
   "scripts": {
-    "build": "bun build ./src/index.ts --outdir ./dist --target node && tsc -p tsconfig.types.json"
+    "build": "bun build ./src/index.ts --outdir ./dist --target node && tsc -p tsconfig.types.json",
+    "test": "bun test",
+    "typecheck": "tsc -p tsconfig.json"
   },
   "devDependencies": {
-    "@types/bun": "latest",
-    "typescript": "^5.0.0"
+    "@types/bun": "1.4.4",
+    "typescript": "7.0.2"
   }
 }
